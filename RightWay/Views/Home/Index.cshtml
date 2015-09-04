@@ -1,0 +1,71 @@
+﻿@model IEnumerable<RightWay.Models.TourEvent>
+
+<div class="row">
+    &nbsp;
+</div>
+<div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-default" style="height: 680px">
+                <div class="panel-heading"><h3>Туризм</h3></div>
+                <div class="panel-body">
+                    <ul class="nav nav-pills nav-stacked">
+                        @{
+                            foreach (var m in Model)
+                            {
+                                <li><a class="evt-item" id="@m.Id" href="#">@m.Title</a></li>
+                            }
+                        }
+
+                    </ul>                        
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-8">
+            <div class="panel panel-default" style="height: 680px">
+                <div id="evtcontent" class="panel-body">
+
+                    Event content
+
+                </div>
+            </div>
+        </div>
+</div>
+@section scripts{
+    <script type="text/javascript">
+        $(function () {
+            $(".evt-item").click(function () {
+                //alert(this.id);
+
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("LoadEvent")' + "/" + this.id,
+                    cache: false,
+                    success: function (data) {
+                        //debugger;
+                        //alert(data);
+                        $('#evtcontent').replaceWith(data);
+
+                        $('.nav-tabs a:first').tab('show');
+
+                        //$('.tab-content').find('.tab-pane').addClass("in active");
+                        
+                        //var tabs = $('.tab-pane');
+                        //if (tabs.length > 0)
+                        //{
+                        //    $(tabs[0]).addClass("in active");
+                        //}
+
+                    },
+                    //error: function(data){
+                    //    debugger;
+                    //    alert(data);
+                    //}
+                });
+
+            });
+        })
+    
+        
+    </script>
+}
