@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body style="overflow: hidden">
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header navbar-brand">
+                @ViewBag.Title
+            </div>
+
+            @*<div class="navbar-collapse collapse">                
+                <ul class="nav navbar-nav">
+                    <li><h5>Самое главное в экстремальных видах спорта - это вовремя заметить, когда заканчивается экстрим, и начинается пи*дец</h5></li>                    
+                </ul>
+            </div>*@
+
+            <ul class="nav navbar-nav navbar-right" style="padding-top:10px">
+                <li><h6><i>Самое главное в экстремальных видах спорта - это вовремя заметить, когда заканчивается экстрим, и начинается пи*дец</i></h6></li>                
+            </ul>
+
+
+        </div>
+    </div>
+    <div class="container-fluid body-content" style="height:670px; overflow: hidden">
+        
+            @RenderBody()
+                            
+    </div>
+
+    <div class="container-fluid" style="padding-top:10px">
+        <footer>
+            <p>&copy; @DateTime.Now.Year - @ViewBag.Title</p>
+        </footer>
+
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

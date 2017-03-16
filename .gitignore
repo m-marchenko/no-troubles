@@ -194,3 +194,7 @@ FakesAssemblies/
 
 # Visual Studio 6 workspace options file
 *.opt
+
+#*.jpg
+RightWay/RightWay/Content/Albums
+RightWay/RightWay/img

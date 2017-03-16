@@ -1,0 +1,90 @@
+﻿@model IEnumerable<RightWay.Models.TourEvent>
+
+
+    <div class="panel-heading">
+        <h3>Туризм</h3>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            
+            <div class="panel panel-default" style="overflow-y: auto; height: 600px">
+
+                <div class="panel-body">
+
+                    @{
+                        var list = Model.GroupBy(m => m.Finish.Year, m => m, (key, g) => new { Year = key, Events = g.ToList() }).OrderByDescending(g => g.Year);
+
+                        foreach (var group in list)
+                        {
+                            <ul class="nav nav-stacked">
+
+                                <h4 style="color: yellow">@group.Year.ToString()</h4>
+
+                                @foreach (var evt in group.Events.OrderByDescending(e => e.Start))
+                                {
+                                    <li><a class="evt-item" style="padding: 2px 15px;" id="@evt.Id" href="#">@evt.Title</a></li>
+                                }
+                            </ul>
+                        }
+                    }
+                    
+                </div>
+            </div>
+        
+        </div>
+        <div class="col-md-9">
+            <div class="panel panel-default" style="overflow-y: auto">
+                <div id="evtcontent" class="panel-body" style="text-align:center; ">
+                    <div style="overflow: auto; height: 600px; ">
+                        @{
+                            var photos = Model.SelectMany(e => e.PhotoAlbums.SelectMany(a => a.Photos));
+                            var number = new Random().Next(photos.Count());
+                            var splash = photos.Skip(number).Take(1).FirstOrDefault();
+                            if (splash != null)
+                            {
+                                <img src="@splash.Url" style="max-width:1024px; max-height:600px; padding-bottom:10px; width:auto; height:auto; margin:auto" />
+                            }
+                        }
+                        </div>
+                    </div>
+            </div>
+        </div>
+</div>
+@section scripts{
+    <script type="text/javascript">
+        $(function () {
+            $(".evt-item").click(function () {
+                //alert("event " + this.id);
+
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("LoadEvent")' + "/" + this.id,
+                    cache: false,
+                    success: function (data) {
+                        //debugger;
+                        //alert(data);
+                        $('#evtcontent').replaceWith(data);
+
+                        $('.nav-tabs a:first').tab('show');
+
+                        //$('.tab-content').find('.tab-pane').addClass("in active");
+                        
+                        //var tabs = $('.tab-pane');
+                        //if (tabs.length > 0)
+                        //{
+                        //    $(tabs[0]).addClass("in active");
+                        //}
+
+                    },
+                    //error: function(data){
+                    //    debugger;
+                    //    alert(data);
+                    //}
+                });
+
+            });
+        })
+    
+    </script>
+}

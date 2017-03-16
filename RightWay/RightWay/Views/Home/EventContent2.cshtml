@@ -1,0 +1,167 @@
+﻿@model RightWay.Models.TourEvent
+
+<div id="evtcontent" class="panel-body">
+
+    <ul class="nav nav-tabs">
+        
+            @if (Model != null)
+            {
+                if (Model.PhotoAlbums != null && Model.PhotoAlbums.Any())
+                {
+                    <li><a data-toggle="tab" href="#photo">Фото</a></li>
+                }
+                if (Model.Participants != null && Model.Participants.Any())
+                {
+                    <li><a data-toggle="tab" href="#part">Состав</a></li>
+                }
+
+                if (Model.Report != null)
+                {
+                    <li><a data-toggle="tab" href="#report">Отчет</a></li>
+                }
+                if (Model.VideoAlbum != null)
+                {
+                    <li><a data-toggle="tab" href="#video">Видео</a></li>
+                }
+            }
+        
+    </ul>
+
+
+    <div style="overflow: auto; height: 550px">
+        <div class="tab-content">
+            
+
+                @if (Model.PhotoAlbums != null && Model.PhotoAlbums.Any())
+                {
+
+                    <div id="photo" class="tab-pane fade" style="margin:10px">
+                        <div id="albumbar" class="nav" style="display:none; width:1000px; height:40px; padding-top:10px">
+                            @foreach (var album in Model.PhotoAlbums)
+                            {
+                                <span style="padding-top:10px; padding-left: 10px" class="text-center"><a id="@album.Id" class="album" href="#" alt="@album.Title">@album.Title&nbsp;</a></span>
+                            }
+
+                            <span style="width: 800px; text-align:right" class="text-right"><a id="backtolist" href="#" style="cursor: pointer" class="text-primary">Назад к списку альбомов&nbsp;</a></span>
+                        </div>
+
+                        <div id="photocontent" style="overflow-y:auto; overflow-x:hidden; margin:10px;">
+
+                            
+                                @if (Model.PhotoAlbums.Count > 1)
+                                {
+                                    <div class="row">
+                                        
+                                            @foreach (var album in Model.PhotoAlbums)
+                                            {
+                                                <div class="col-md-3">
+                                                    <a id="@album.Id" class="album" href="#" alt="@album.Title"><img src="@album.Cover.Url" style="width:220px;height:165px " /></a>
+                                                    <br />
+                                                    <h4>@album.Title</h4>
+                                                </div>
+                                            }
+                                        
+                                    </div>
+                                }
+                                else
+                                {
+                                    Html.RenderPartial("~/Views/Home/EventContent1.cshtml", Model.PhotoAlbums.FirstOrDefault());
+                                }
+
+
+                        </div>
+                    </div>
+                }
+
+                @if (Model.Participants != null && Model.Participants.Any())
+                {
+                    <div id="part" class="tab-pane fade" style="margin:10px;">
+
+                    @foreach (var p in Model.Participants)
+                    {
+                        <div class="col-md-3 text-center">
+                            @if (p.FacePicture != null)
+                            {
+                                <img src='@p.FacePicture.Url' style="width:220px;height:165px " />
+                            }
+                            else
+                            {
+                                <img src='' style="width:220px;height:165px; border: 1pt solid " />
+                            }
+                            <br />
+                            <h4 class="text-center">@p.Title</h4>
+                        </div>
+                    }
+
+
+                </div>
+            }
+
+            @if (Model.Report != null)
+            {
+                <div id="report" class="tab-pane fade">
+                    <h3>Отчет</h3>
+                    <p>Some content in menu 1.</p>
+                </div>
+            }
+
+            @if (Model.VideoAlbum != null)
+            {
+                <div id="video" class="tab-pane fade">
+                    <h3>Видео</h3>
+                    <p>Some content in menu 2.</p>
+                </div>
+            }            
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $(".album").click(function () {
+            //alert("event=" + "@Model.Id" + " , album=" + this.id);
+
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("LoadAlbum")' + "?eventId=" + "@Model.Id" + "&albumId=" + this.id,
+                cache: false,
+                success: function (data) {
+                    //debugger;
+                    //alert(data);
+                    $('#photocontent').replaceWith(data);
+                    $('#albumbar').show();
+                },
+                error: function (data) {
+                    debugger;
+                    alert(data);
+                }
+
+            });
+
+        });
+
+
+        $("#backtolist").click(function () {
+            //alert("Pressed " + this.id);
+            //debugger;
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("LoadEvent")' + "?id=" + "@Model.Id",
+                cache: false,
+                success: function (data) {
+                    //debugger;
+                    //alert(data);
+                    $('#evtcontent').replaceWith(data);
+                    $('.nav-tabs a:first').tab('show');
+                },
+                //error: function (data) {
+                //    debugger;
+                //    alert(data);
+                //}
+
+            });
+        });
+    });
+
+</script>
